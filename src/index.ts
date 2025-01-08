@@ -1,4 +1,5 @@
 import express from 'express';
+import prisma from './client';
 
 export const app = express();
 const port = 3000;
@@ -12,8 +13,9 @@ app.use((req, res, next) => {
 });
 
 // Route pour obtenir la liste des utilisateurs
-app.get('/users', (req, res) => {
-  res.status(200).send('Liste des utilisateurs');
+app.get('/users', async (_req, res) => {
+  const users = await prisma.user.findMany({ include: { posts: true } }); // Récupère tous les utilisateurs et leurs posts
+  res.status(200).send(users);
 });
 
 // Route pour obtenir un utilisateur en particulier

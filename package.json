@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.2.0",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.5",
     "chalk": "^5.4.1",
@@ -19,5 +20,11 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.2.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
