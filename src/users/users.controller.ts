@@ -1,10 +1,13 @@
-import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-
-const prisma = new PrismaClient();
+import prisma from '../client';
 
 export const getUsers = async (_req: Request, res: Response) => {
   const users = await prisma.user.findMany({ include: { posts: true } });
+  debugger;
+  if (users.length === 0) {
+    res.status(204).end();
+    return;
+  }
   res.status(200).send(users);
 };
 
