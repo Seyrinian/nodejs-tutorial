@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: Prisma User API
+  version: 1.0.0
+  description: API pour gérer les utilisateurs et leurs posts
+servers:
+  - url: http://localhost:3000
+    description: Serveur local
+paths:
+  /users:
+    get:
+      summary: Récupère tous les utilisateurs
+      responses:
+        '200':
+          description: Liste des utilisateurs avec leurs posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserWithPosts'
+        '204':
+          description: Aucun utilisateur trouvé
+    post:
+      summary: Crée un nouvel utilisateur
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+      responses:
+        '201':
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Non autorisé (token manquant ou invalide)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /users/{userId}:
+    get:
+      summary: Récupère un utilisateur par son ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de l'utilisateur
+      responses:
+        '200':
+          description: Utilisateur trouvé avec ses posts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithPosts'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Utilisateur non trouvé
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: My First Post
+        authorId:
+          type: integer
+          example: 1
+    UserWithPosts:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            posts:
+              type: array
+              items:
+                $ref: '#/components/schemas/Post'

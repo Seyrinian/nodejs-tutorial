@@ -56,6 +56,13 @@ describe('GET /users/:userId', () => {
 });
 
 describe('POST /users', () => {
+  it('should return 401 if no token is provided', async () => {
+    const response = await request(app).post('/users');
+
+    expect(response.status).toBe(401);
+    expect(response.text).toBe('Unauthorized');
+  });
+
   it('should create a user', async () => {
     // Génération d'un jeton JWT valide
     const token = jwt.sign({ userId: '123' }, 'SECRET_TOKEN');
